@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package lab2;
+package lab2.automata;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -25,7 +20,11 @@ public class State {
     /**
      * if state is final variable= true, else false
      */
-    private final boolean isFinal;
+    private boolean isFinal;
+
+    public State(int n0) {
+        this(n0, false);
+    }
 
     public State(int n0, boolean isFinal0) {
         n = n0;
@@ -76,6 +75,13 @@ public class State {
         }
         return nextStates.get(ch);
     }
+    
+    /**
+     * make current state final
+     */
+    public void setFinal() {
+        isFinal= true;
+    }
 
     /**
      * @return string, that discribing state
@@ -90,8 +96,9 @@ public class State {
         return s.toString();
     }
 
-    /**
+    /**BUG BUG BUG!!!
      * @return true if this and obj are equivalents
+     * BUG with cycles
      */
     @Override
     public boolean equals(Object obj) {
