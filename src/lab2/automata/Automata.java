@@ -23,14 +23,14 @@ public class Automata {
     private State state0;
 
     private TreeSet<Integer> numbersOfFinalStates = new TreeSet<Integer>();
-    
-    public boolean readAutomata(String filePath) throws IOException{
-            FileInputStream fis = new FileInputStream(filePath);
-            InputStreamReader isr = new InputStreamReader(fis, "Cp1251");
-            Scanner in = new Scanner(isr);
-            return this.readAutomata(in);        
+
+    public boolean readAutomata(String filePath) throws IOException {
+        FileInputStream fis = new FileInputStream(filePath);
+        InputStreamReader isr = new InputStreamReader(fis, "Cp1251");
+        Scanner in = new Scanner(isr);
+        return this.readAutomata(in);
     }
-    
+
     public boolean readAutomata(Scanner in) {
         if (in == null) {
             return false;
@@ -108,9 +108,45 @@ public class Automata {
             return;
         }
         numbersStates.add(state.getNumber());
-        //states.set(state.getNumber(), state);
         states[state.getNumber()] = state;
         return;
+    }
+
+    public void minimaze() {
+        deleteUnattainableStates();
+    }
+
+    private void deleteUnattainableStates() {
+        boolean attainable[] = new boolean[stateSize];
+        for (int i = 0; i < stateSize; i++) {
+            attainable[i] = false;
+        }
+
+        State state;
+        Queue<State> queue = new LinkedList<State>();
+
+        queue.clear();
+        queue.add(state0);
+        attainable[state0.getNumber()] = true;
+        while (!queue.isEmpty()) {
+            state = queue.poll();
+            if (state == null) {
+                break;
+            }
+            for (Character ch : alphavet) {
+                State st = state.getNextState(ch);
+                if (st != null && !attainable[st.getNumber()]) {
+                    attainable[st.getNumber()] = true;
+                    queue.add(st);
+                }
+            }
+        }
+
+        for (int i = 0; i < stateSize; i++) {
+            if (!attainable[i]) {
+                states[i] = null;
+            }
+        }
     }
 
 }
