@@ -32,7 +32,6 @@ public class Automata {
     }
 
    // private TreeSet<Integer> numbersOfFinalStates = new TreeSet<Integer>();
-
     public boolean readAutomata(String filePath) throws IOException {
         FileInputStream fis = new FileInputStream(filePath);
         InputStreamReader isr = new InputStreamReader(fis, "Cp1251");
@@ -45,7 +44,8 @@ public class Automata {
             return false;
         }
         try {
-            /*alphavetSize = */in.nextInt();
+            /*alphavetSize = */
+            in.nextInt();
             int stateSize = in.nextInt();
             states = new State[stateSize];
 
@@ -196,7 +196,7 @@ public class Automata {
         if (states.length > maxStateOfNFA) {
             return null;
         }
-
+        optimaze();
         Automata a = createTemplateForDFA();
         int maxMask = (1 << states.length);
 
@@ -227,7 +227,7 @@ public class Automata {
             }
 
         }
-        a.state0= a.states[pow[state0.getNumber()]];
+        a.state0 = a.states[pow[state0.getNumber()]];
         a.optimaze();
         return a;
     }
@@ -241,20 +241,23 @@ public class Automata {
             }
         }
 
-        int stateSize = number;
-        State[] newStates = new State[stateSize];
-        for (State state : states) {
-            if (state != null) {
-                newStates[state.getNumber()] = state;
+        if (number < states.length) {
+            int stateSize = number;
+            State[] newStates = new State[stateSize];
+            for (State state : states) {
+                if (state != null) {
+                    newStates[state.getNumber()] = state;
+                }
             }
-        }
 
-        states = newStates;
+            states = newStates;
+        }
     }
 
-    public Automata minimaze() {
-        deleteUnattainableStates();
+    public Automata minimazeDFA() {
+        optimaze();
         /*
+        deleteUnattainableStates();
          int numberOfClasses = 2;
          int stateClass[] = new int[states.length];
          for (int i = 0; i < states.length; i++) {
