@@ -13,7 +13,7 @@ import javax.imageio.IIOException;
  */
 public class Automata {
 
-    private static int maxStateOfNFA = 20;
+    private static final int maxStateOfNFA = 14;
     //private int alphavetSize;
     private TreeSet<Character> alphavet = new TreeSet<Character>();
     //private int stateSize;
@@ -23,7 +23,7 @@ public class Automata {
 
     private State state0;
 
-    private static int pow[] = new int[maxStateOfNFA];
+    private static final int pow[] = new int[maxStateOfNFA];
 
     static {
         for (int i = 0; i < maxStateOfNFA; i++) {
@@ -31,7 +31,7 @@ public class Automata {
         }
     }
 
-    private TreeSet<Integer> numbersOfFinalStates = new TreeSet<Integer>();
+   // private TreeSet<Integer> numbersOfFinalStates = new TreeSet<Integer>();
 
     public boolean readAutomata(String filePath) throws IOException {
         FileInputStream fis = new FileInputStream(filePath);
@@ -66,7 +66,7 @@ public class Automata {
         for (int i = 0; i < n; i++) {
             int stateNumb = in.nextInt();
             addState(new State(stateNumb, true));
-            numbersOfFinalStates.add(stateNumb);
+//            numbersOfFinalStates.add(stateNumb);
         }
     }
 
