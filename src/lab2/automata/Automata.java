@@ -3,6 +3,7 @@ package lab2.automata;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
 import java.util.TreeSet;
 import javax.imageio.IIOException;
@@ -25,13 +26,48 @@ public class Automata {
 
     private static final int pow[] = new int[maxStateOfNFA];
 
+    public void printAutomata(String filePath) throws IOException {
+        FileOutputStream fos = new FileOutputStream(filePath);
+        OutputStreamWriter osw = new OutputStreamWriter(fos);
+        PrintWriter out = new PrintWriter(osw);
+        printAutomata(out);
+        out.flush();
+        out.close();
+    }
+
+    public void printAutomata(PrintWriter out) {
+        out.println(alphavet.size());
+        out.println(states.length);
+        out.println(state0.getNumber());
+        int numberOfFinal=0;
+        for (int i=0; i<states.length; i++) {
+            if (states[i].isFinal()) numberOfFinal++;
+        }
+        out.print(numberOfFinal);
+        for (int i=0; i<states.length; i++) {
+            if (states[i].isFinal()) {
+                out.print(" "+states[i].getNumber());
+            }
+        }
+        out.println();
+        
+        for (int i=0; i<states.length; i++) {
+            for (Character character: alphavet) {
+                State st= states[i].getNextState(character);
+                if (st!=null) {
+                    out.println(""+i+" "+character+" "+st.getNumber());
+                }
+            }
+        }
+    }
+
     static {
         for (int i = 0; i < maxStateOfNFA; i++) {
             pow[i] = (1 << i);
         }
     }
 
-   // private TreeSet<Integer> numbersOfFinalStates = new TreeSet<Integer>();
+    // private TreeSet<Integer> numbersOfFinalStates = new TreeSet<Integer>();
     public boolean readAutomata(String filePath) throws IOException {
         FileInputStream fis = new FileInputStream(filePath);
         InputStreamReader isr = new InputStreamReader(fis, "Cp1251");
@@ -257,7 +293,7 @@ public class Automata {
     public Automata minimazeDFA() {
         optimaze();
         /*
-        deleteUnattainableStates();
+         deleteUnattainableStates();
          int numberOfClasses = 2;
          int stateClass[] = new int[states.length];
          for (int i = 0; i < states.length; i++) {
