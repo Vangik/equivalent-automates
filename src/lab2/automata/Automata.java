@@ -14,9 +14,9 @@ import javax.imageio.IIOException;
 public class Automata {
 
     private static int maxStateOfNFA = 20;
-    private int alphavetSize;
+    //private int alphavetSize;
     private TreeSet<Character> alphavet = new TreeSet<Character>();
-    private int stateSize;
+    //private int stateSize;
     private TreeSet<Integer> numbersStates = new TreeSet<Integer>();
     //private TreeSet<State> finalStates= new TreeSet<State>();
     private State[] states;
@@ -45,8 +45,8 @@ public class Automata {
             return false;
         }
         try {
-            alphavetSize = in.nextInt();
-            stateSize = in.nextInt();
+            /*alphavetSize = */in.nextInt();
+            int stateSize = in.nextInt();
             states = new State[stateSize];
 
             state0 = new State(in.nextInt());
@@ -178,16 +178,27 @@ public class Automata {
         return nextMask;
     }
 
+    private Automata createTemplateForDFA() {
+        Automata a = new Automata();
+        a.alphavet = new TreeSet<>();
+        for (Character character : alphavet) {
+            if (character != 'e') {
+                a.alphavet.add(character);
+            }
+        }
+
+        State newStates[] = createNewStatesForDFA();
+        a.states = newStates;
+        return a;
+    }
+
     public Automata buildDFA() {
         if (states.length > maxStateOfNFA) {
             return null;
         }
 
-        Automata a = new Automata();
-        a.alphavet = alphavet;
+        Automata a = createTemplateForDFA();
         int maxMask = (1 << states.length);
-        State newStates[] = createNewStatesForDFA();
-        a.states = newStates;
 
         Queue<Integer> queue = new LinkedList<>();
         boolean was[] = new boolean[maxMask];
@@ -199,7 +210,7 @@ public class Automata {
         was[pow[state0.getNumber()]] = true;
         while (!queue.isEmpty()) {
             int mask = queue.poll();
-            State curState = newStates[mask];
+            State curState = a.states[mask];
 
             for (Character ch : alphavet) {
                 if (ch == 'e') {
@@ -211,12 +222,34 @@ public class Automata {
                         was[nextMask] = true;
                         queue.add(nextMask);
                     }
-                    curState.addNextState(ch, newStates[nextMask]);
+                    curState.addNextState(ch, a.states[nextMask]);
                 }
             }
 
         }
+        a.state0= a.states[pow[state0.getNumber()]];
+        a.optimaze();
         return a;
+    }
+
+    private void optimaze() {
+        deleteUnattainableStates();
+        int number = 0;
+        for (State state : states) {
+            if (state != null) {
+                state.setNumber(number++);
+            }
+        }
+
+        int stateSize = number;
+        State[] newStates = new State[stateSize];
+        for (State state : states) {
+            if (state != null) {
+                newStates[state.getNumber()] = state;
+            }
+        }
+
+        states = newStates;
     }
 
     public Automata minimaze() {
@@ -234,8 +267,8 @@ public class Automata {
     }
 
     private void deleteUnattainableStates() {
-        boolean attainable[] = new boolean[stateSize];
-        for (int i = 0; i < stateSize; i++) {
+        boolean attainable[] = new boolean[states.length];
+        for (int i = 0; i < states.length; i++) {
             attainable[i] = false;
         }
 
@@ -259,7 +292,7 @@ public class Automata {
             }
         }
 
-        for (int i = 0; i < stateSize; i++) {
+        for (int i = 0; i < states.length; i++) {
             if (!attainable[i]) {
                 states[i] = null;
             }
