@@ -50,6 +50,13 @@ public class State {
     }
 
     /**
+     * set new number 
+     * @param number new number for state 
+     */
+    public void setNumber(int number) {
+        this.n= number;
+    }
+    /**
      * @return number of states that next to current (including current if it
      * has eps-conversion)
      */
