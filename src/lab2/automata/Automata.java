@@ -13,6 +13,7 @@ import javax.imageio.IIOException;
  */
 public class Automata {
 
+    private static int maxStateOfNFA = 20;
     private int alphavetSize;
     private TreeSet<Character> alphavet = new TreeSet<Character>();
     private int stateSize;
@@ -21,6 +22,14 @@ public class Automata {
     private State[] states;
 
     private State state0;
+
+    private static int pow[] = new int[maxStateOfNFA];
+
+    static {
+        for (int i = 0; i < maxStateOfNFA; i++) {
+            pow[i] = (1 << i);
+        }
+    }
 
     private TreeSet<Integer> numbersOfFinalStates = new TreeSet<Integer>();
 
@@ -112,8 +121,116 @@ public class Automata {
         return;
     }
 
-    public void minimaze() {
+    private State[] createNewStatesForDFA() {
+        int maxMask = (1 << states.length);
+        State newStates[] = new State[maxMask];
+        for (int mask = 1; mask < maxMask; mask++) {
+            newStates[mask] = createStateByMask(mask);
+        }
+
+        return newStates;
+    }
+
+    private State createStateByMask(int mask) {
+        boolean isFinal = false;
+        for (int i = 0; i < states.length; i++) {
+            if ((mask & pow[i]) != 0 && states[i] != null && states[i].isFinal()) {
+                isFinal = true;
+                break;
+            }
+        }
+
+        return new State(mask, isFinal);
+    }
+
+    private int getNextStatesOfMaskByCharacter(int mask, Character ch) {
+        int nextMask = 0;
+        for (int i = 0; i < states.length; i++) {
+            if ((mask & pow[i]) != 0 && states[i] != null) {//mask contain state i
+                State state = states[i].getNextState(ch);
+                if (state != null) {
+                    nextMask |= pow[state.getNumber()];
+                }
+                {
+                    state = states[i].getNextState('e');
+                    if (state != null) {
+                        boolean visited[] = new boolean[states.length];
+                        for (int j = 0; j < states.length; j++) {
+                            visited[j] = false;
+                        }
+                        visited[i] = true;
+                        while (state != null) {
+                            if (visited[state.getNumber()]) {
+                                break;
+                            }
+                            visited[state.getNumber()] = true;
+                            if (state.getNextState(ch) != null) {
+                                nextMask |= pow[state.getNextState(ch).getNumber()];
+                                break;
+                            } else {
+                                state = state.getNextState('e');
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return nextMask;
+    }
+
+    public Automata buildDFA() {
+        if (states.length > maxStateOfNFA) {
+            return null;
+        }
+
+        Automata a = new Automata();
+        a.alphavet = alphavet;
+        int maxMask = (1 << states.length);
+        State newStates[] = createNewStatesForDFA();
+        a.states = newStates;
+
+        Queue<Integer> queue = new LinkedList<>();
+        boolean was[] = new boolean[maxMask];
+        for (int i = 0; i < maxMask; i++) {
+            was[i] = false;
+        }
+
+        queue.add(pow[state0.getNumber()]);
+        was[pow[state0.getNumber()]] = true;
+        while (!queue.isEmpty()) {
+            int mask = queue.poll();
+            State curState = newStates[mask];
+
+            for (Character ch : alphavet) {
+                if (ch == 'e') {
+                    continue;
+                }
+                int nextMask = getNextStatesOfMaskByCharacter(mask, ch);
+                if (nextMask != 0) {
+                    if (!was[nextMask]) {
+                        was[nextMask] = true;
+                        queue.add(nextMask);
+                    }
+                    curState.addNextState(ch, newStates[nextMask]);
+                }
+            }
+
+        }
+        return a;
+    }
+
+    public Automata minimaze() {
         deleteUnattainableStates();
+        /*
+         int numberOfClasses = 2;
+         int stateClass[] = new int[states.length];
+         for (int i = 0; i < states.length; i++) {
+         if (states[i] == null) {
+         stateClass[i] = -1;
+         }
+
+         }*/
+        return buildDFA();
     }
 
     private void deleteUnattainableStates() {

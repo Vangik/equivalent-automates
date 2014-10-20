@@ -27,8 +27,8 @@ public class Solver {
             return false;
         }
         
-        automata1.minimaze();
-        automata2.minimaze();
-        return automata1.equals(automata2);
+        Automata dfa1= automata1.minimaze();
+        Automata dfa2= automata2.minimaze();
+        return dfa1.equals(dfa2);
     }
 }
