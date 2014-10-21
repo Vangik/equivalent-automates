@@ -1,5 +1,6 @@
 package lab2;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.Scanner;
@@ -26,9 +27,17 @@ public class Solver {
             System.err.println("Error reading automata2");
             return false;
         }
+
+        Automata dfa1 = automata1.buildDFA();
+        Automata dfa2 = automata2.buildDFA();
+
+        try {
+            dfa1.printAutomata(""+new File("automates\\dfa1$.$tmp") );
+            dfa2.printAutomata(""+new File("automates\\dfa2$.$tmp") );
+        } catch (Exception e) {
+            return false;
+        }
         
-        Automata dfa1= automata1.buildDFA();
-        Automata dfa2= automata2.buildDFA();
         return dfa1.equals(dfa2);
     }
 }
