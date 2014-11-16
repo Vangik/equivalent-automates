@@ -28,7 +28,7 @@ public class Solver {
             return false;
         }
 
-/*        Automata dfa1 = automata1.buildDFA();
+        Automata dfa1 = automata1.buildDFA();
         Automata dfa2 = automata2.buildDFA();
 
         try {
@@ -38,8 +38,8 @@ public class Solver {
             return false;
         }
         
-        return dfa1.equals(dfa2);
-        */
-        return automata1.equals(automata2);
+        //return dfa1.equals(dfa2);
+        
+        return dfa1.equalsDFA(dfa2);
     }
 }
