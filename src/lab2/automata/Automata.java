@@ -33,6 +33,7 @@ public class Automata {
         printAutomata(out);
         out.flush();
         out.close();
+        printAutomata(System.out);
     }
 
     public void printAutomata(PrintWriter out) {
