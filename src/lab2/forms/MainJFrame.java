@@ -41,6 +41,7 @@ public class MainJFrame extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem4 = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
@@ -123,17 +124,17 @@ public class MainJFrame extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(labelCopyRught))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(buttonBrowseFile1, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(buttonBrowseFile2, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(buttonBrowseFile2, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
+                            .addComponent(buttonBrowseFile1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(labelFile2Name, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(labelFile1Name, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addGap(15, 15, 15))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButtonSolve, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButtonSolve, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -158,13 +159,23 @@ public class MainJFrame extends javax.swing.JFrame {
 
         jMenu2.setText("Файл");
 
-        jMenuItem2.setText("обрати файл");
+        jMenuItem2.setText("обрати файл 1");
+        jMenuItem2.setName("menuItemBrowseFile1"); // NOI18N
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
+                menuItemBrowseFile1Click(evt);
             }
         });
         jMenu2.add(jMenuItem2);
+
+        jMenuItem4.setText("обрати файл 2");
+        jMenuItem4.setName("menuItemBrowseFile2"); // NOI18N
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemBrowseFile2Click(evt);
+            }
+        });
+        jMenu2.add(jMenuItem4);
 
         jMenuItem1.setText("вихід");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
@@ -221,9 +232,6 @@ public class MainJFrame extends javax.swing.JFrame {
         }
     }
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
-
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         System.exit(0);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
@@ -254,6 +262,14 @@ public class MainJFrame extends javax.swing.JFrame {
                 "Результат", JOptionPane.INFORMATION_MESSAGE);
 
     }//GEN-LAST:event_jButtonSolveActionPerformed
+
+    private void menuItemBrowseFile2Click(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemBrowseFile2Click
+        browseFile(labelFile2Name);
+    }//GEN-LAST:event_menuItemBrowseFile2Click
+
+    private void menuItemBrowseFile1Click(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemBrowseFile1Click
+        browseFile(labelFile1Name);
+    }//GEN-LAST:event_menuItemBrowseFile1Click
 
     /**
      * @param args the command line arguments
@@ -304,6 +320,7 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel labelCaption;
     private javax.swing.JLabel labelCopyRught;
