@@ -3,7 +3,7 @@ package wslf;
 /**
  * @author Wsl_F
  */
-public class Pair <E extends Comparable<E>> implements Comparable<Pair<E>>{
+public class Pair <E> {
     public E first;
     public E second;
 
@@ -25,7 +25,7 @@ public class Pair <E extends Comparable<E>> implements Comparable<Pair<E>>{
     public boolean equals(Pair<E> p2) {
         return first.equals(p2.first)&&second.equals(p2.second);
     }
-    
+    /*
     @Override
     public int compareTo(Pair<E> p2) {
         if (first.equals(p2.first)) {
@@ -34,4 +34,5 @@ public class Pair <E extends Comparable<E>> implements Comparable<Pair<E>>{
             return first.compareTo(p2.first);
         }
     }
+    */
 }
