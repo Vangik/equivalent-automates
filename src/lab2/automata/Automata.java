@@ -7,6 +7,7 @@ import java.io.*;
 import java.util.*;
 import java.util.TreeSet;
 import javax.imageio.IIOException;
+import wslf.Pair;
 
 /**
  *
@@ -39,23 +40,25 @@ public class Automata {
         out.println(alphavet.size());
         out.println(states.length);
         out.println(state0.getNumber());
-        int numberOfFinal=0;
-        for (int i=0; i<states.length; i++) {
-            if (states[i].isFinal()) numberOfFinal++;
+        int numberOfFinal = 0;
+        for (int i = 0; i < states.length; i++) {
+            if (states[i].isFinal()) {
+                numberOfFinal++;
+            }
         }
         out.print(numberOfFinal);
-        for (int i=0; i<states.length; i++) {
+        for (int i = 0; i < states.length; i++) {
             if (states[i].isFinal()) {
-                out.print(" "+states[i].getNumber());
+                out.print(" " + states[i].getNumber());
             }
         }
         out.println();
-        
-        for (int i=0; i<states.length; i++) {
-            for (Character character: alphavet) {
-                State st= states[i].getNextState(character);
-                if (st!=null) {
-                    out.println(""+i+" "+character+" "+st.getNumber());
+
+        for (int i = 0; i < states.length; i++) {
+            for (Character character : alphavet) {
+                State st = states[i].getNextState(character);
+                if (st != null) {
+                    out.println("" + i + " " + character + " " + st.getNumber());
                 }
             }
         }
@@ -338,4 +341,80 @@ public class Automata {
         }
     }
 
+    private void createFictionalState() {
+        State fictionalState = new State(states.length, false);
+        for (Character ch : alphavet) {
+            fictionalState.addNextState(ch, fictionalState);
+        }
+
+        boolean flag = alphavet.contains('e');
+        if (flag) {
+            alphavet.remove('e');
+        }
+
+        for (State state : states) {
+            for (Character ch : alphavet) {
+                if (state.getNextState(ch) == null) {
+                    state.addNextState(ch, fictionalState);
+                }
+            }
+        }
+
+        if (flag) {
+            alphavet.add('e');
+        }
+    }
+
+    public boolean equal(Automata automata2) {
+        optimaze();
+        createFictionalState();
+        automata2.optimaze();
+        automata2.createFictionalState();
+        Queue<Pair<State>> queue = new LinkedList<>();
+
+        queue.add(new Pair<>(state0, automata2.state0));
+        boolean used1[] = new boolean[states.length + 1];
+        boolean used2[] = new boolean[automata2.states.length + 1];
+        used1[state0.getNumber()] = true;
+        used2[automata2.state0.getNumber()] = true;
+
+        alphavet.remove('e');
+
+        while (!queue.isEmpty()) {
+            Pair<State> pair = queue.poll();
+            State state1 = pair.first;
+            State state2 = pair.second;
+            if (state1.isFinal() != state2.isFinal()) {
+                return false;
+            }
+
+            for (Character ch : alphavet) {
+                addNextStateToQueue(ch, state1, state2, used1, used2, queue);
+            }
+
+            if (state1.getNextState('e') != null) {
+                addNextStateToQueue('e', state1.getNextState('e'), state2, used1, used2, queue);
+            }
+
+            if (state2.getNextState('e') != null) {
+                addNextStateToQueue('e', state1, state2.getNextState('e'), used1, used2, queue);
+            }
+        }
+
+        return false;
+    }
+
+    private boolean addNextStateToQueue(Character ch, State state1, State state2,
+            boolean[] used1, boolean[] used2, Queue<Pair<State>> queue) {
+
+        if (!used1[state1.getNextState(ch).getNumber()]
+                || !used2[state2.getNextState(ch).getNumber()]) {
+            queue.add(new Pair<>(state1.getNextState(ch), state2.getNextState(ch)));
+            used1[state1.getNextState(ch).getNumber()] = true;
+            used2[state2.getNextState(ch).getNumber()] = true;
+            return true;
+        }
+
+        return false;
+    }
 }
