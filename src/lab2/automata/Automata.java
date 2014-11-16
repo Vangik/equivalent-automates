@@ -365,7 +365,7 @@ public class Automata {
         }
     }
 
-    public boolean equal(Automata automata2) {
+    public boolean equalsDFA(Automata automata2) {
         optimaze();
         createFictionalState();
         automata2.optimaze();
@@ -401,12 +401,16 @@ public class Automata {
             }
         }
 
-        return false;
+        return true;
     }
 
     private boolean addNextStateToQueue(Character ch, State state1, State state2,
             boolean[] used1, boolean[] used2, Queue<Pair<State>> queue) {
-
+        if (state1.getNextState(ch) == null
+                || state2.getNextState(ch) == null) {
+            return false;
+        }
+        
         if (!used1[state1.getNextState(ch).getNumber()]
                 || !used2[state2.getNextState(ch).getNumber()]) {
             queue.add(new Pair<>(state1.getNextState(ch), state2.getNextState(ch)));
