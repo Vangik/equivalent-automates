@@ -373,10 +373,9 @@ public class Automata {
         Queue<Pair<State>> queue = new LinkedList<>();
 
         queue.add(new Pair<>(state0, automata2.state0));
-        boolean used1[] = new boolean[states.length + 1];
-        boolean used2[] = new boolean[automata2.states.length + 1];
-        used1[state0.getNumber()] = true;
-        used2[automata2.state0.getNumber()] = true;
+        boolean [][] used = new boolean[states.length + 1][automata2.states.length + 1];
+        used[state0.getNumber()][automata2.state0.getNumber()] = true;
+        //used2 = true;
 
         alphavet.remove('e');
 
@@ -389,15 +388,15 @@ public class Automata {
             }
 
             for (Character ch : alphavet) {
-                addNextStateToQueue(ch, state1, state2, used1, used2, queue);
+                addNextStateToQueue(ch, state1, state2, used, queue);
             }
 
             if (state1.getNextState('e') != null) {
-                addNextStateToQueue('e', state1.getNextState('e'), state2, used1, used2, queue);
+                addNextStateToQueue('e', state1.getNextState('e'), state2, used, queue);
             }
 
             if (state2.getNextState('e') != null) {
-                addNextStateToQueue('e', state1, state2.getNextState('e'), used1, used2, queue);
+                addNextStateToQueue('e', state1, state2.getNextState('e'), used, queue);
             }
         }
 
@@ -405,17 +404,15 @@ public class Automata {
     }
 
     private boolean addNextStateToQueue(Character ch, State state1, State state2,
-            boolean[] used1, boolean[] used2, Queue<Pair<State>> queue) {
+            boolean[][] used, Queue<Pair<State>> queue) {
         if (state1.getNextState(ch) == null
                 || state2.getNextState(ch) == null) {
             return false;
         }
         
-        if (!used1[state1.getNextState(ch).getNumber()]
-                || !used2[state2.getNextState(ch).getNumber()]) {
+        if (!used[state1.getNextState(ch).getNumber()][state2.getNextState(ch).getNumber()]) {
             queue.add(new Pair<>(state1.getNextState(ch), state2.getNextState(ch)));
-            used1[state1.getNextState(ch).getNumber()] = true;
-            used2[state2.getNextState(ch).getNumber()] = true;
+            used[state1.getNextState(ch).getNumber()][state2.getNextState(ch).getNumber()] = true;
             return true;
         }
 
